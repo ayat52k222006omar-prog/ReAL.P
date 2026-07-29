@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbon Footprint & Environmental Impact Calculator - ReAL.P</title>
+  <!-- Favicon / Logo Icon -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      --accent-green: #10b981;
+      --text-main: #1e293b;
+      --bg-light: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header Section */
+    header.main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 65px;
+      background: var(--header-gradient);
+      color: white;
+      padding: 0 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
+      z-index: 999;
+    }
+
+    .brand-logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .brand-logo span {
+      color: var(--accent-green);
+    }
+
+    .search-container {
+      flex: 0 1 350px;
+      position: relative;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 8px 15px 8px 38px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      outline: none;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .search-container input::placeholder {
+      color: #94a3b8;
+    }
+
+    .search-container input:focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: var(--accent-green);
+    }
+
+    .search-container i {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+
+    .menu-icon {
+      font-size: 22px;
+      cursor: pointer;
+      color: white;
+      transition: color 0.2s;
+    }
+
+    .menu-icon:hover {
+      color: var(--accent-green);
+    }
+
+    /* Sidebar Menu */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      right: 0;
+      background-color: #0b0f19;
+      overflow-x: hidden;
+      transition: 0.35s ease-in-out;
+      padding-top: 20px;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+    }
+
+    .sidebar .close-btn {
+      display: block;
+      text-align: left;
+      padding: 10px 25px;
+      font-size: 28px;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar a.menu-item {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.2s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      white-space: nowrap;
+    }
+
+    .sidebar a.menu-item:hover {
+      background-color: #1e293b;
+      color: var(--accent-green);
+      padding-left: 30px;
+    }
+
+    .sidebar a.menu-item i {
+      width: 22px;
+      text-align: center;
+      color: var(--accent-green);
+    }
+
+    /* Middle Scrollable Content Area */
+    .middle-content {
+      margin-top: 65px; 
+      margin-bottom: 85px; 
+      flex: 1;
+      overflow-y: auto; 
+      padding: 40px 20px;
+      max-width: 950px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+
+    .page-title {
+      color: #0f172a;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--accent-green);
+      padding-left: 12px;
+    }
+
+    .page-subtitle {
+      color: #64748b;
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+
+    /* Calculator Layout Container */
+    .calc-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .calc-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .calc-card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+    .calc-card h3 {
+      font-size: 1.25rem;
+      color: #0f172a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .calc-card h3 i {
+      color: var(--accent-green);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.90rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      outline: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-group small {
+      display: block;
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    .calc-btn {
+      width: 100%;
+      background: var(--header-gradient);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .calc-btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .output-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .output-item h4 {
+      font-size: 0.95rem;
+      color: #0f172a;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .output-item h4 i {
+      color: var(--accent-green);
+    }
+
+    .output-item p {
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .output-value {
+      font-weight: bold;
+      color: var(--accent-green);
+    }
+
+    .placeholder-text {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    /* Footer Section */
+    footer.main-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 85px;
+      background-color: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 5px 10px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 3px;
+    }
+
+    .social-links a {
+      color: #0f172a;
+      font-size: 1.1rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .social-links a:hover {
+      color: var(--accent-green);
+      transform: translateY(-2px);
+    }
+
+    .footer-comment {
+      font-size: 0.8rem;
+      color: #475569;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer-comment i {
+      color: var(--accent-green);
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="main-header">
+    <a href="index.html" class="brand-logo">
+      <img src="Logo.jpeg" alt="ReAL.P Logo"> ReAL<span>.P</span>
+    </a>
+    <div class="search-container">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="searchInput" placeholder="Search site (e.g. patents, carbon)...">
+    </div>
+    <div class="menu-icon" onclick="openNav()">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </header>
+
+  <!-- Sidebar Menu -->
+  <div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+    <a href="awareness.html" class="menu-item"><i class="fa-solid fa-book-open"></i><span>Awareness</span></a>
+    <a href="patents.html" class="menu-item"><i class="fa-solid fa-lightbulb"></i><span>Intellectual Property</span></a>
+    <a href="carbon-calculator.html" class="menu-item"><i class="fa-solid fa-leaf"></i><span>Carbon Calculator</span></a>
+    <a href="partnership-sample.html" class="menu-item"><i class="fa-solid fa-handshake"></i><span>Industrial Partnership</span></a>
+    <a href="contact.html" class="menu-item"><i class="fa-solid fa-envelope"></i><span>Contact Us</span></a>
+  </div>
+
+  <!-- Middle Scrollable Area -->
+  <main class="middle-content">
+    <h1 class="page-title">Carbon Footprint & Environmental Impact Calculator</h1>
+    <p class="page-subtitle">Quantifying Emission Reductions and Resource Efficiency via Circular Economy</p>
+
+    <div class="calc-container">
+      <!-- User Inputs Column -->
+      <div class="calc-card">
+        <h3><i class="fa-solid fa-sliders"></i> I. User Inputs</h3>
+        
+        <div class="form-group">
+          <label for="aluminumInput">Target Aluminum Waste for Recycling (kg / month):</label>
+          <input type="number" id="aluminumInput" placeholder="e.g. 500" min="0">
+          <small>Converted to produce the nanomaterial utilized in the composite.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="wastewaterInput">Treated Industrial Wastewater Volume (m³ / day):</label>
+          <input type="number" id="wastewaterInput" placeholder="e.g. 120" min="0">
+          <small>Generated from textile, dyeing, or metal plating industries.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="chemicalInput">Conventional Chemical Consumption Rate (kg / year):</label>
+          <input type="number" id="chemicalInput" placeholder="e.g. 2400" min="0">
+          <small>For baseline comparison with advanced dual-treatment composite.</small>
+        </div>
+
+        <button class="calc-btn" onclick="calculateImpact()">
+          <i class="fa-solid fa-calculator"></i> Calculate Impact
+        </button>
+      </div>
+
+      <!-- Calculated Outputs Column -->
+      <div class="calc-card">
+        <h3><i class="fa-solid fa-chart-line"></i> II. Performance Metrics</h3>
+
+        <div class="output-item">
+          <h4><i class="fa-solid fa-cloud-arrow-down"></i> 1. Carbon Avoided Emissions Index</h4>
+          <p>Estimated Result: <span id="carbonOutput" class="output-value placeholder-text">Awaiting input...</span></p>
+        </div>
+
+        <div class="output-item">
+          <h4><i class="fa-solid fa-water"></i> 2. Water Quality & Aquatic Protection Index</h4>
+          <p>Estimated Result: <span id="waterOutput" class="output-value placeholder-text">Awaiting input...</span></p>
+        </div>
+
+        <div class="output-item">
+          <h4><i class="fa-solid fa-recycle"></i> 3. Reusability & Circularity Score</h4>
+          <p>Estimated Result: <span id="wasteOutput" class="output-value placeholder-text">Awaiting input...</span></p>
+        </div>
+
+        <div class="output-item">
+          <h4><i class="fa-solid fa-coins"></i> 4. Direct Economic Cost Savings</h4>
+          <p>Estimated Result: <span id="costOutput" class="output-value placeholder-text">Awaiting input...</span></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/ahmed-talaat-7057662a8"><i class="fa-brands fa-linkedin"></i></a>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ayat.52.k22.2006.omar@gmail.com" target="_blank">
+        <i class="fa-solid fa-envelope"></i>
+      </a>
+      <a href="https://www.facebook.com/share/1SCupteiHm/"><i class="fa-brands fa-facebook"></i></a>
+      <a href="https://wa.me/201203410751"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+    
+    <p class="footer-comment">
+      <i class="fa-solid fa-seedling"></i> Empowering a green industrial future through advanced recycling.
+    </p>
+
+    <p class="footer-copy">All rights reserved &copy; 2026 ReAL.P</p>
+  </footer>
+
+  <script>
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "280px";
+    }
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
+
+    // Dynamic Calculation Logic on Button Click
+    function calculateImpact() {
+      const aluminumInputVal = document.getElementById('aluminumInput').value;
+      const wastewaterInputVal = document.getElementById('wastewaterInput').value;
+      const chemicalInputVal = document.getElementById('chemicalInput').value;
+
+      // Check if fields are empty
+      if (aluminumInputVal === '' || wastewaterInputVal === '' || chemicalInputVal === '') {
+        alert('Please fill in all input fields to calculate your facility parameters.');
+        return;
+      }
+
+      const aluminumMonthly = parseFloat(aluminumInputVal) || 0;
+      const wastewaterDaily = parseFloat(wastewaterInputVal) || 0;
+      const chemicalYearly = parseFloat(chemicalInputVal) || 0;
+
+      // 1. Carbon Avoided Calculation (10 kg CO2 per 1 kg recycled aluminum * 12 months)
+      const carbonAnnual = aluminumMonthly * 12 * 10;
+      const carbonElem = document.getElementById('carbonOutput');
+      carbonElem.innerText = `${carbonAnnual.toLocaleString()} kg CO₂ avoided per year. (Benchmark: ~10 kg CO₂ saved per 1 kg recycled aluminum).`;
+      carbonElem.classList.remove('placeholder-text');
+
+      // 2. Water Quality & Aquatic Protection Index
+      const waterElem = document.getElementById('waterOutput');
+      waterElem.innerText = `High-efficiency removal (>95%) for daily ${wastewaterDaily.toLocaleString()} m³ wastewater, ensuring complete safeguard against heavy metals and toxic dyes.`;
+      waterElem.classList.remove('placeholder-text');
+
+      // 3. Reusability & Circularity Score
+      const wasteElem = document.getElementById('wasteOutput');
+      wasteElem.innerText = `Retains over 90% operational efficiency across 5+ regeneration cycles. Solid waste generation slashed by >80%.`;
+      wasteElem.classList.remove('placeholder-text');
+
+      // 4. Economic Cost Savings (Assuming $6 saved per kg of conventional chemical replaced)
+      const costSavings = chemicalYearly * 6;
+      const costElem = document.getElementById('costOutput');
+      costElem.innerText = `Replaces expensive imported conventional adsorbents, yielding an estimated savings of $${costSavings.toLocaleString()} annually.`;
+      costElem.classList.remove('placeholder-text');
+    }
+
+    // خريطة البحث العام لجميع صفحات موقع ReAL.P
+    const globalSearchIndex = [
+      {
+        keywords: ["nature", "innovation", "aluminum", "adsorbent", "mechanism", "one-pot", "pats", "patents", "waste"],
+        url: "patents.html",
+        title: "Intellectual Property & Innovation"
+      },
+      {
+        keywords: ["awareness", "circular", "economy", "wastewater", "purification", "feasibility", "reusability", "posts"],
+        url: "awareness.html",
+        title: "Awareness & Environmental Posts"
+      },
+      {
+        keywords: ["calculator", "carbon", "footprint", "emission", "green", "co2", "impact"],
+        url: "carbon-calculator.html",
+        title: "Carbon Calculator"
+      },
+      {
+        keywords: ["partnership", "industrial", "collaboration", "factory", "business", "sample"],
+        url: "partnership-sample.html",
+        title: "Industrial Partnership"
+      },
+      {
+        keywords: ["contact", "email", "phone", "whatsapp", "location", "support", "message", "ayat", "talaat"],
+        url: "contact.html",
+        title: "Contact Us"
+      }
+    ];
+
+    // تفعيل البحث العام عند كتابة الكلمة والضغط على Enter
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const query = searchInput.value.trim().toLowerCase();
+          if (query === "") return;
+
+          let matchedPage = globalSearchIndex.find(item => 
+            item.keywords.some(keyword => keyword.includes(query)) || item.title.toLowerCase().includes(query)
+          );
+
+          if (matchedPage) {
+            window.location.href = matchedPage.url;
+          } else {
+            alert("No matching results found for: " + query);
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
