@@ -352,6 +352,21 @@
     <a href="carbon-calculator.html" class="menu-item"><i class="fa-solid fa-leaf"></i><span>Carbon Calculator</span></a>
     <a href="partnership-sample.html" class="menu-item"><i class="fa-solid fa-handshake"></i><span>Industrial Partnership</span></a>
     <a href="contact.html" class="menu-item"><i class="fa-solid fa-envelope"></i><span>Contact Us</span></a>
+    <!-- قسم الأمن السيبراني وخصوصية البيانات -->
+<section id="security-privacy" style="padding: 20px; background: #f9f9f9; margin-top: 20px; border-radius: 8px;">
+    <h2>Cybersecurity and Data Privacy</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <h3>🔒 Cybersecurity Measures</h3>
+        <p>At ReAL.P, we are committed to protecting our data infrastructure by using strong encryption protocols (such as HTTPS and SSL), securing databases with restricted access permissions, and regularly updating security systems to prevent any potential vulnerabilities.</p>
+    </div>
+
+    <div>
+        <h3>🛡️ User Privacy</h3>
+        <p>We are committed to protecting the confidentiality of our customers' and users' data and not sharing it with any third party, while providing users with full control over their data to ensure a secure and reliable digital environment.</p>
+    </div>
+</section>
+  
   </div>
 
   <!-- Hero Content -->
@@ -459,6 +474,21 @@
       }
     }
   </script>
+<script>
+    // دالة لتنظيف مدخلات المستخدم ومنع أي أكواد ضارة
+    function sanitizeInput(input) {
+        var element = document.createElement('div');
+        element.innerText = input;
+        return element.innerHTML;
+    }
 
+    // مثال عند إرسال البيانات
+    // ملحوظة: تأكد أن الفورم عندك لها كلاس أو آي دي، أو استخدم selector مناسب زي ما هو مكتوب
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var userInput = document.querySelector('#userinput').value;
+        var safeInput = sanitizeInput(userInput);
+        // هنا بيتم إرسال safeInput بأمان
+    });
+</script>
 </body>
 </html>
